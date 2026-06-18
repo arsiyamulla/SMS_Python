@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ student.name }} - Student Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>👨‍🎓 Student Profile</h1>
+        <p class="subtitle">Complete student information</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar">👨‍🎓</div>
+            <div class="profile-name">
+                <h2>{{ student.name }}</h2>
+                <p>Roll No: {{ student.rollno }}</p>
+            </div>
+        </div>
+
+        <div class="profile-info">
+            <div class="info-row">
+                <div class="info-label">📚 Department</div>
+                <div class="info-value">{{ student.dept }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">📅 Year</div>
+                <div class="info-value">{{ student.year }}{% if student.year == 1 %}st{% elif student.year == 2 %}nd{% elif student.year == 3 %}rd{% else %}th{% endif %} Year</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">📧 Email</div>
+                <div class="info-value">{{ student.email }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">📱 Phone</div>
+                <div class="info-value">{{ student.phone if student.phone else 'Not provided' }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">⭐ CGPA</div>
+                <div class="info-value">
+                    <span class="cgpa-badge {% if student.cgpa >= 8.5 %}excellent{% elif student.cgpa >= 7 %}good{% else %}average{% endif %}">
+                        {{ student.cgpa }}
+                    </span>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">📊 Attendance</div>
+                <div class="info-value">
+                    <div class="attendance-bar">
+                        <span class="attendance-text">{{ student.attendance }}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">📅 Enrolled Date</div>
+                <div class="info-value">{{ student.enrolled_date }}</div>
+            </div>
+        </div>
+
+        <!-- Update Attendance Form -->
+        <div class="attendance-form">
+            <h3>Update Attendance</h3>
+            <form action="/update_attendance/{{ student.id }}" method="POST">
+                <div class="form-group">
+                    <input type="number" name="attendance" min="0" max="100" value="{{ student.attendance }}" required>
+                    <button type="submit" class="btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="navigation-links">
+        <a href="/display" class="btn-secondary">← Back to Student List</a>
+        <a href="/" class="btn-secondary">🏠 Home</a>
+    </div>
+</div>
+
+</body>
+</html>
